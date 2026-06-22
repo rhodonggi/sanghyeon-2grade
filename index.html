@@ -321,12 +321,25 @@ async function doLogin(){
   routeScreen();
 }
 
+// ── JSONP 요청 (CORS 우회: script 태그로 호출) ──
+function jsonp(params){
+  return new Promise(function(resolve,reject){
+    var cb='__cb'+Date.now()+Math.floor(Math.random()*10000);
+    var timer=setTimeout(function(){ cleanup(); reject(new Error('timeout')); },20000);
+    function cleanup(){ clearTimeout(timer); delete window[cb]; if(s&&s.parentNode) s.parentNode.removeChild(s); }
+    window[cb]=function(data){ cleanup(); resolve(data); };
+    var url=SCRIPT_URL+'?callback='+cb+'&_t='+Date.now()+'&'+params;
+    var s=document.createElement('script');
+    s.src=url;
+    s.onerror=function(){ cleanup(); reject(new Error('script_error')); };
+    document.body.appendChild(s);
+  });
+}
+
 // ── 내 신청 불러오기 ──
 async function loadMyReg(){
   try{
-    const u=SCRIPT_URL+'?action=getMyReg&grade=2&cls='+student.cls+'&num='+student.num;
-    const r=await fetch(u,{method:'GET'});
-    const d=await r.json();
+    const d=await jsonp('action=getMyReg&grade=2&cls='+student.cls+'&num='+student.num);
     if(d.success){
       savedA=d.a||null; savedB=d.b||null; savedC=d.c||null;
       selA=savedA; selB=savedB; selC=savedC;
@@ -337,8 +350,7 @@ async function loadMyReg(){
 // ── 현황 가져오기 ──
 async function fetchCounts(){
   try{
-    const r=await fetch(SCRIPT_URL+'?action=getCounts',{method:'GET'});
-    const d=await r.json();
+    const d=await jsonp('action=getCounts');
     if(d.success){
       cntA=d.A||{}; cntB=d.B||{}; cntC=d.C||{};
       serverTotal=(typeof d.total==='number')?d.total:0;
@@ -451,9 +463,14 @@ async function doSave(){
   if(!selA||!selB||!selC) return;
   btn.disabled=true; btn.textContent='저장 중...';
   try{
-    const params=new URLSearchParams({action:'register',grade:'2',cls:student.cls,num:student.num,name:student.name,a:selA,b:selB,c:selC});
-    const r=await fetch(SCRIPT_URL+'?'+params.toString(),{method:'GET'});
-    const d=await r.json();
+    const params='action=register&grade=2'
+      +'&cls='+encodeURIComponent(student.cls)
+      +'&num='+encodeURIComponent(student.num)
+      +'&name='+encodeURIComponent(student.name)
+      +'&a='+encodeURIComponent(selA)
+      +'&b='+encodeURIComponent(selB)
+      +'&c='+encodeURIComponent(selC);
+    const d=await jsonp(params);
     if(d.success){
       savedA=d.a; savedB=d.b; savedC=d.c;
       selA=savedA; selB=savedB; selC=savedC;
@@ -464,7 +481,7 @@ async function doSave(){
       msg.innerHTML='<div class="al al-err">「'+(d.name||'')+'」('+(d.full||'')+'타임)이(가) 방금 마감되었습니다. 다른 프로그램을 선택해 주세요.</div>';
       await fetchCounts();
     }else{
-      msg.innerHTML='<div class="al al-err">저장 중 오류가 발생했습니다. 다시 시도해 주세요.</div>';
+      msg.innerHTML='<div class="al al-err">저장 중 오류(서버): '+(d.error||'')+' '+(d.message||'')+'</div>';
     }
   }catch(e){
     msg.innerHTML='<div class="al al-err">네트워크 오류입니다. 잠시 후 다시 시도해 주세요.</div>';
