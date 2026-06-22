@@ -245,7 +245,7 @@ const CLOSE = new Date('2026-06-25T21:00:00+09:00');
 const GATE_CODE='17869';
 
 // ★ 2학년용 새 배포 URL로 교체하세요
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzL1B-KYvJS_Tm-qYn0obI6LRB9vjKL-H-yI6ajvqOFLub9SoPR457sJP6W2dpXy7pQ/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzJxIONUNofUkyLYo4Z35bIEjhpFYW2h9VoSwq_jAtfCvfmPVoDq04j9kbFSJ4XRoDb/exec';
 
 // ── 상태 ──
 let student=null;
@@ -345,6 +345,15 @@ async function loadMyReg(){
       selA=savedA; selB=savedB; selC=savedC;
     }
   }catch(e){}
+}
+
+// 저장 검증용: 현재 선택을 건드리지 않고 서버의 내 신청만 읽어 반환
+async function readMyReg(){
+  try{
+    const d=await jsonp('action=getMyReg&grade=2&cls='+student.cls+'&num='+student.num+'&_t='+Date.now());
+    if(d.success) return {a:d.a||null,b:d.b||null,c:d.c||null};
+  }catch(e){}
+  return null;
 }
 
 // ── 현황 가져오기 ──
@@ -462,29 +471,45 @@ async function doSave(){
   const btn=document.getElementById('save-btn'); const msg=document.getElementById('apply-msg');
   if(!selA||!selB||!selC) return;
   btn.disabled=true; btn.textContent='저장 중...';
-  try{
-    const params='action=register&grade=2'
-      +'&cls='+encodeURIComponent(student.cls)
-      +'&num='+encodeURIComponent(student.num)
-      +'&name='+encodeURIComponent(student.name)
-      +'&a='+encodeURIComponent(selA)
-      +'&b='+encodeURIComponent(selB)
-      +'&c='+encodeURIComponent(selC);
-    const d=await jsonp(params);
-    if(d.success){
-      savedA=d.a; savedB=d.b; savedC=d.c;
-      selA=savedA; selB=savedB; selC=savedC;
-      msg.innerHTML='<div class="al al-ok">✅ 신청이 저장되었습니다.</div>';
-      await fetchCounts();
-      setTimeout(()=>{ msg.innerHTML=''; },4000);
-    }else if(d.error&&d.error.indexOf('full')===0){
-      msg.innerHTML='<div class="al al-err">「'+(d.name||'')+'」('+(d.full||'')+'타임)이(가) 방금 마감되었습니다. 다른 프로그램을 선택해 주세요.</div>';
-      await fetchCounts();
-    }else{
-      msg.innerHTML='<div class="al al-err">저장 중 오류(서버): '+(d.error||'')+' '+(d.message||'')+'</div>';
+  const wantA=selA, wantB=selB, wantC=selC;
+  const params='action=save&grade=2'
+    +'&cls='+encodeURIComponent(student.cls)
+    +'&num='+encodeURIComponent(student.num)
+    +'&sname='+encodeURIComponent(student.name)
+    +'&a='+encodeURIComponent(selA)
+    +'&b='+encodeURIComponent(selB)
+    +'&c='+encodeURIComponent(selC);
+
+  let d=null;
+  // 1차: jsonp 시도
+  try{ d=await jsonp(params); }catch(e1){ d=null; }
+  // 2차: jsonp 실패 시 fetch 시도
+  if(!d){
+    try{
+      const r=await fetch(SCRIPT_URL+'?'+params,{method:'GET',mode:'cors'});
+      d=await r.json();
+    }catch(e2){ d=null; }
+  }
+
+  // 3차: 응답을 못 받았어도 서버엔 저장됐을 수 있음 → 내 신청을 다시 읽어 확인
+  if(!d || !d.success){
+    const mine=await readMyReg();
+    if(mine && mine.a===wantA && mine.b===wantB && mine.c===wantC){
+      d={success:true, a:mine.a, b:mine.b, c:mine.c}; // 저장 확인됨
     }
-  }catch(e){
-    msg.innerHTML='<div class="al al-err">네트워크 오류입니다. 잠시 후 다시 시도해 주세요.</div>';
+  }
+
+  if(d && d.success){
+    savedA=d.a; savedB=d.b; savedC=d.c;
+    selA=savedA; selB=savedB; selC=savedC;
+    msg.innerHTML='<div class="al al-ok">✅ 신청이 저장되었습니다.</div>';
+    await fetchCounts();
+    setTimeout(()=>{ msg.innerHTML=''; },4000);
+  }else if(d && d.error && d.error.indexOf('full')===0){
+    msg.innerHTML='<div class="al al-err">「'+(d.name||'')+'」('+(d.full||'')+'타임)이(가) 방금 마감되었습니다. 다른 프로그램을 선택해 주세요.</div>';
+    await fetchCounts();
+  }else{
+    msg.innerHTML='<div class="al al-err">저장에 실패했습니다. 잠시 후 다시 시도해 주세요.</div>';
   }
   updateSaveBar();
 }
