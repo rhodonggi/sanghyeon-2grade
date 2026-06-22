@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>학교자율과정 수강 신청 | 2학년</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#1D9E75;--gd:#0F6E56;--gl:#E1F5EE;--gy:#f5f5f0;--bd:#e5e5e5;--tx:#1a1a1a;--mu:#666;--lt:#aaa;--blue:#0C3A75;--bl:#EBF4FF;--amber:#FFF8E7;--ab:#6B4700}
+body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--gy);color:var(--tx);min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid var(--bd);padding:11px 16px;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center}
+.topbar-t{font-size:15px;font-weight:700}
+.topbar-s{font-size:11px;color:var(--mu);margin-top:1px}
+.topbar-b{font-size:11px;color:var(--mu);text-align:right}
+.wrap{max-width:680px;margin:0 auto;padding:14px}
+.card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:12px}
+.ct{font-size:15px;font-weight:700;margin-bottom:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.fg label{font-size:12px;color:var(--mu);display:block;margin-bottom:4px;font-weight:500}
+.fg input,.fg select{border:1px solid var(--bd);border-radius:9px;padding:10px 12px;font-size:14px;width:100%;background:#fff;color:var(--tx);-webkit-appearance:none;appearance:none}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23aaa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--g)}
+.btn{border:none;border-radius:10px;padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;width:100%;transition:background .15s,transform .1s}
+.btn:active{transform:scale(.98)}
+.btn-g{background:var(--g);color:#fff}.btn-g:hover{background:var(--gd)}.btn-g:disabled{background:#ccc;cursor:default;transform:none}
+.btn-o{background:#fff;color:var(--mu);border:1px solid var(--bd)}.btn-o:hover{background:var(--gy)}
+.al{border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:12px;line-height:1.6}
+.al-ok{background:#E1F5EE;color:#085041}
+.al-err{background:#FDECEC;color:#7B1818}
+.al-info{background:#EBF4FF;color:#0C3A75}
+.al-warn{background:#FFF8E7;color:#6B4700}
+.al-purple{background:#EEEDFE;color:#3C3489}
+/* 진행 단계 */
+.steps{display:flex;align-items:center;margin-bottom:16px;gap:0}
+.step-item{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.step-item:not(:last-child)::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:2px;background:var(--bd);z-index:0}
+.step-item.done::after{background:var(--g)}
+.step-circle{width:28px;height:28px;border-radius:50%;border:2px solid var(--bd);background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--lt);z-index:1;position:relative}
+.step-item.done .step-circle{background:var(--g);border-color:var(--g);color:#fff}
+.step-item.active .step-circle{border-color:var(--g);color:var(--g);font-weight:700}
+.step-label{font-size:10px;color:var(--lt);margin-top:4px;text-align:center}
+.step-item.active .step-label{color:var(--g);font-weight:600}
+.step-item.done .step-label{color:var(--g)}
+/* 프로그램 카드 */
+.pgrid{display:grid;grid-template-columns:1fr;gap:8px}
+.pc{background:#fff;border:1.5px solid var(--bd);border-radius:12px;padding:14px;cursor:pointer;transition:all .15s;position:relative}
+.pc:hover{border-color:var(--g);background:#f9fffe}
+.pc.selected{border:2.5px solid var(--g);background:var(--gl)}
+.pc.disabled{opacity:.45;cursor:default;pointer-events:none}
+.pc.locked{border-color:var(--g);background:var(--gl);cursor:default}
+.pc-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.pc-num{min-width:26px;height:26px;border-radius:50%;background:var(--g);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pc-num.disabled{background:#ccc}
+.pc-name{font-size:13px;font-weight:700;line-height:1.35;color:var(--tx)}
+.pc-meta{font-size:11px;color:var(--mu);margin-bottom:6px;margin-left:34px}
+.tag{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:5px;margin-right:4px}
+.tag-통합{background:#FFF8E7;color:#633806;border:1px solid #F0C040}
+.tag-A{background:#EBF4FF;color:#0C447C}
+.tag-B{background:#EEEDFE;color:#3C3489}
+.tag-C{background:#EAF3DE;color:#27500A}
+.pc-bar-wrap{margin-left:34px}
+.pc-seats{font-size:11px;font-weight:700;float:right}
+.seats-ok{color:var(--g)}.seats-warn{color:#E67E22}.seats-full{color:#C0392B}
+.bar-bg{background:var(--gy);border-radius:4px;height:4px;overflow:hidden;clear:both;margin-top:2px}
+.bar-fill{height:4px;border-radius:4px}
+.lock-badge{font-size:11px;color:var(--gd);font-weight:700;margin-top:6px;margin-left:34px}
+/* 선택 요약 */
+.sel-summary{background:var(--gy);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.sel-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd)}
+.sel-row:last-child{border-bottom:none}
+.sel-label{font-size:11px;color:var(--mu);min-width:60px;font-weight:600}
+.sel-val{font-size:12px;color:var(--tx);flex:1;font-weight:500}
+.sel-badge{font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px}
+.badge-a{background:#EBF4FF;color:#0C447C}
+.badge-b{background:#EEEDFE;color:#3C3489}
+.badge-c{background:#EAF3DE;color:#27500A}
+/* 최종 확인 */
+.confirm-box{border:1.5px solid var(--g);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.confirm-head{background:var(--g);color:#fff;padding:10px 14px;font-size:13px;font-weight:700}
+.confirm-row{padding:11px 14px;border-bottom:1px solid #e8f5ee;display:flex;gap:10px;align-items:flex-start}
+.confirm-row:last-child{border-bottom:none}
+.confirm-key{font-size:12px;font-weight:700;color:var(--mu);min-width:80px;flex-shrink:0}
+.confirm-val{font-size:13px;color:var(--tx);line-height:1.5}
+.gate-box{max-width:360px;margin:60px auto 0}
+.btn-row{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:12px}
+
+.cd-box{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:40px 20px;text-align:center;max-width:400px;margin:60px auto 0}
+.cd-title{font-size:14px;color:var(--mu);margin-bottom:6px}
+.cd-sub{font-size:20px;font-weight:700;color:var(--tx);margin-bottom:24px}
+.cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:320px;margin:0 auto 20px}
+.cd-unit{background:var(--gy);border-radius:10px;padding:14px 4px}
+.cd-num{font-size:28px;font-weight:700;line-height:1;color:var(--tx)}
+.cd-lbl{font-size:11px;color:var(--lt);margin-top:4px}
+.closed-box{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:40px 20px;text-align:center;max-width:400px;margin:60px auto 0}
+</style>
+<style>
+/* 추가: 슬롯 섹션 */
+.slot-head{display:flex;align-items:center;gap:8px;margin:18px 0 10px}
+.slot-badge{font-size:12px;font-weight:800;padding:4px 12px;border-radius:8px}
+.sb-a{background:#EBF4FF;color:#0C447C}
+.sb-b{background:#EEEDFE;color:#3C3489}
+.sb-c{background:#EAF3DE;color:#27500A}
+.slot-desc{font-size:11.5px;color:var(--mu)}
+.sumbar{display:flex;gap:8px;margin-bottom:14px}
+.sumbar .sc{flex:1;background:#fff;border:1px solid var(--bd);border-radius:12px;padding:12px 6px;text-align:center}
+.sumbar .sn{font-size:22px;font-weight:800}
+.sumbar .sl{font-size:11px;color:var(--mu);margin-top:2px}
+.mysel{background:var(--gl);border:1.5px solid var(--g);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.mysel-t{font-size:12px;font-weight:800;color:var(--gd);margin-bottom:8px}
+.mysel .sel-row{border-color:#cce9df}
+.save-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--bd);padding:12px 14px;margin:0 -14px -14px;display:flex;gap:10px;align-items:center}
+.save-bar .si{flex:1;font-size:11.5px;color:var(--mu)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-t">학교자율과정 수강 신청</div>
+    <div class="topbar-s">2026학년도 1학기 · 2학년</div>
+  </div>
+  <div class="topbar-b" id="top-badge"></div>
+</div>
+
+<div class="wrap">
+
+<!-- 게이트 -->
+<div id="gate" class="gate-box" style="display:none">
+  <div class="card">
+    <div class="ct">접속 코드 입력</div>
+    <div class="al al-info">담당 선생님이 안내한 접속 코드를 입력하세요.</div>
+    <div class="fg"><label>접속 코드</label><input id="gate-input" type="tel" inputmode="numeric" placeholder="5자리 숫자" maxlength="5"></div>
+    <div id="gate-msg"></div>
+    <button class="btn btn-g" style="margin-top:12px" onclick="checkGate()">확인</button>
+  </div>
+</div>
+
+<!-- 카운트다운(시작 전) -->
+<div id="countdown" style="display:none"></div>
+<!-- 마감 -->
+<div id="closed" style="display:none"></div>
+
+<!-- 로그인 -->
+<div id="login" style="display:none">
+  <div class="card">
+    <div class="ct">학생 정보 입력</div>
+    <div class="al al-info">본인 정보를 정확히 입력해 주세요. (학년·반·번호·이름·생년월일)</div>
+    <div class="g2">
+      <div class="fg"><label>학년</label><input id="in-grade" value="2" readonly></div>
+      <div class="fg"><label>반</label><input id="in-cls" type="tel" inputmode="numeric" placeholder="반"></div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label>번호</label><input id="in-num" type="tel" inputmode="numeric" placeholder="번호"></div>
+      <div class="fg"><label>이름</label><input id="in-name" placeholder="이름"></div>
+    </div>
+    <div class="fg"><label>생년월일 8자리 (예: 20090401)</label><input id="in-dob" type="tel" inputmode="numeric" placeholder="YYYYMMDD" maxlength="8"></div>
+    <div id="login-msg"></div>
+    <button class="btn btn-g" style="margin-top:12px" id="login-btn" onclick="doLogin()">입장하기</button>
+  </div>
+</div>
+
+<!-- 신청 (한 화면 A/B/C) -->
+<div id="apply" style="display:none">
+  <div class="sumbar">
+    <div class="sc"><div class="sn" id="s-tot">0</div><div class="sl">신청 완료</div></div>
+    <div class="sc"><div class="sn" id="s-not" style="color:#E67E22">0</div><div class="sl">미신청</div></div>
+    <div class="sc"><div class="sn" id="s-full" style="color:#C0392B">0</div><div class="sl">마감 강좌</div></div>
+  </div>
+
+  <div id="my-current" style="display:none"></div>
+
+  <div class="card">
+    <div class="al al-info" style="font-size:12px">
+      <strong>A / B / 진로캠프</strong>를 각각 1개씩 선택하세요.
+      이미 신청한 경우 <strong>바꿀 항목만</strong> 다시 누르고 아래 <strong>저장</strong>을 누르면 됩니다.<br>
+      ⚠️ A타임에서 <strong>가~바(1~6, A/B통합)</strong>를 고르면 B타임에도 같은 프로그램이 자동 배정됩니다.
+    </div>
+
+    <div class="slot-head"><span class="slot-badge sb-a">A타임</span><span class="slot-desc">1개 선택</span></div>
+    <div class="pgrid" id="grid-a"></div>
+
+    <div class="slot-head"><span class="slot-badge sb-b">B타임</span><span class="slot-desc" id="b-desc">1개 선택</span></div>
+    <div id="b-notice"></div>
+    <div class="pgrid" id="grid-b"></div>
+
+    <div class="slot-head"><span class="slot-badge sb-c">진로전공캠프</span><span class="slot-desc">1개 선택</span></div>
+    <div class="pgrid" id="grid-c"></div>
+
+    <div id="apply-msg" style="margin-top:14px"></div>
+
+    <div class="save-bar">
+      <div class="si" id="save-info">A·B·진로캠프를 모두 선택하면 저장할 수 있습니다.</div>
+      <button class="btn btn-g" style="width:auto;padding:12px 28px" id="save-btn" onclick="doSave()" disabled>저장</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const STUDENT_HASH = {"2-1-1": "f3d3010cad26a89a6b5ac6d163cbeec91de482a0df5d97a478fe3ba211918561", "2-1-4": "b0f27b5d73043ee5ea877d6646eab98665fdb72346214a675c39f2d867a113c6", "2-1-5": "c10f5f5dfa8b77552c57114a17833007dd148b5bbd1cc02137da9b260a0c744e", "2-1-6": "620d1cf8f1f63880ab47c7fd345d599214ac678ac6bbce09ddd3581aa717b29f", "2-1-7": "a2bdac1437357bcf775fc8197a92a2698bcba37fcd2aac23e542a79c3c2a607c", "2-1-8": "21403c590835b18debad0a5570c1c24e542df3deca676585bea4b77da98e3fbc", "2-1-9": "4923ab6882f3b63db37e74c4fd478cd51b20f03ffabd8da34e3fceadda1bca80", "2-1-10": "52d3b27aa961e876dc3b8209e04c4c85883a8f14b256b2c864f1164f1b30711d", "2-1-11": "6b956663f9f7d553f029426662be950340f50d6cb600553eb967917a4630d1fe", "2-1-12": "e0e13b42402bf99a01cd2760bc3ba6aafcc1a8ff12929aad1868dea99bed0e4f", "2-1-13": "07e018e1d81beaf9fdde5cfe833fe8e4f533d2e170d9626e9d9ff5377f4206a9", "2-1-14": "5966f8d161a57790c4edb7d89cdcb134db034146269d5237ab96584f7311a879", "2-1-15": "c78a8e52a6c08665a88783494dba515fe3a3ae2d37d1254e2de9be39ab1f6358", "2-1-16": "a6f599ea4e776c4ad1066c7a9b04f7ecb1a86958600a3d602b1f203b4d291dfa", "2-1-17": "31ea439581af6bebb93e8269c5ac7a5facb5007c5e56f4e742d4476e95d47c5c", "2-1-18": "1770f05abb05e492fc2b87dfba5eca016445df37ee7bce92a0597f09806ccd03", "2-1-19": "7450d33a244078462d50f77c55fc08ca9c0496974ee001b7c3307291eadad99a", "2-1-20": "66707bc513291a32ca1d138c19d3de6a8e40d5ee71ab9935803d121527f85853", "2-1-21": "180afbb9719fe03f808d3891f89f0aa8e69271660f2474b4804e7fcb177b561c", "2-1-22": "23c25ddb237260d4d31bf0898d0344e23e59332bd048c3db08981d2196e0783e", "2-1-23": "86ab1d7ab327568b27ea478e9b644a479f5ae1ed125bc71969eb21c5d4593efd", "2-1-24": "503e167b6b0e955aff467fa78437ebf0cba34a2fe1b566915b0a969164ec8818", "2-1-25": "cfcdd92ea9d239c24a45f408c19ff845310cdcb14b60179779413c88ad2afd99", "2-1-26": "f60ca208656afd2b98a3ba6d55444ee2813bd9128a75ed9c18a575d9461daaf6", "2-1-27": "f3ec402d6226f36d74d072e3a4f9d585880e95dd2786e7c983c3fb317c56d1f1", "2-1-28": "f0b7925f6f2d94226a64d9af3d5547db51bb3555203e1c5c5f962f5d5f1868af", "2-1-29": "70d1c95598794abc814a1bc114c0e53455bf13cd677d21104b3f8ce49986f728", "2-1-30": "6554c3935ecd0286e4b1db3943f2d5709bc977405754b61bf166a26462aae3a1", "2-1-31": "c144be0d810f8068cca481bf006b9e7b72e5ba9835fec7296a0f284d8cabe590", "2-1-32": "192e92651671e43523b329ed2db4825e2d683f50ed0a6d5baec72a8a29eaa0db", "2-2-1": "335f679b7cce4d20d9b96ba1a838cc108c29844a6c64206f45772ad7f92a4994", "2-2-2": "ad270899780d82d6764d6ce13efab021407ab120748ee689a5ead7cc6f724e7f", "2-2-3": "1e68c1009d4ab5719bf213ff309f297fad4289d1b484eacc3aba0a8d70b31a81", "2-2-4": "7099e22d2bbfa076b728dc2b8635c2356d3793b3db2427292d17c9ae1ab2794a", "2-2-5": "1ea8e6923c403f1ea6d169dc624fe72970d5585f404f7bcf716a91e8b21a2b2b", "2-2-6": "e42dad8e0d48facc74e3410aecf68b1e7a8b695ab62b866912972d668ecd71b3", "2-2-7": "49ec6048bfad421bd0b1e163880185c8628cbd34f014eee978f5fb59729ac00f", "2-2-8": "37206b70680f0c88415b4ae6ecfe4c8f7a946816a7ee2108f3fa32346e8b5c93", "2-2-9": "7a00b2e88e99209095da51605936dd33cfb1dafd11c59e1c004b654883add186", "2-2-10": "d74a1ddfe8b66af401b329ee8932cab2842d2c078b13e321d6e0c369b6864e59", "2-2-11": "f66560bf8f61621e00bc8d6691bd31481b163d9803c81e25ffcf44ca5f8b2182", "2-2-12": "df4e426a8150027a8cb25d9bdbd3bc990c68544a1fef4be6cb4e4af317659f1c", "2-2-13": "2740a6b8e79b8fc572ae9bcb9f7e2034df7061e936fb44ab23ca01289682c2b4", "2-2-14": "0002762c249d5d89aa5b20f9ac6ab642e7e7552e3e196c1c28e3542f60ce4c31", "2-2-15": "3159ae1f12a84b8f1e6278fa58ea27646cc963f3eafc7d1ecac853f4122c564e", "2-2-16": "662bc8dab677d929db7161bf68c0df2016c49614ec7c64ec9f66c44304b6d393", "2-2-17": "8a670eac682993b1bd7bb5a7a6952167230a7e9f6e6d2322e3c09f3e6f9b70ee", "2-2-18": "2d3a5d00a2fd149435a6526b8a94194279cecbfb026ce85068abae6e4a349295", "2-2-19": "7018f52104171c1abfa9a06d91ca1123eb39abfd7695caa27e040bd21999d678", "2-2-20": "a82abbdce3bb7bbc9319b8b5d140e42fd7c069d8cf0c78face713cd3881c0996", "2-2-21": "40245e274d79180a1bc015a04525af38cf6fc004ee8e54a4ca43b5b982bf5933", "2-2-22": "6d26ac1eefe95948d7f2b8e8ed6ef790e6db08fdcca3d25ae9dd1e15f2ee596a", "2-2-23": "14b62f49dfaa726c066303d68f8fc73956b4abd7ba39911475356ad3a85ed70d", "2-2-24": "0a91a0aebe1e548f03260cace9cd63d0f492a907a30dfcabd3aaf7e672247ed2", "2-2-25": "34b2733e3ece0fc0a9ab8c1e48092490a7167fe2c0ab1998d2c237b8c7ed6d39", "2-2-26": "09a1568c645d863ccb9e7348c7a8c17fc2fbc7bc26aa56e2762fc98303706acc", "2-2-27": "08f315be916b6bb3a69d5307d62e2507ce6e130a2be7fd957812ad7f4ea9c1b9", "2-2-28": "874526ba2263c8c9ea50858ab1e15a49851c279738333606a29eef9c386a9744", "2-2-29": "6055ac66e39146c1949963f714ecedefb315c28dd804f4ea91b2bb3abd93f543", "2-2-30": "8a7d47a1c3d7352cb2e83f48d5b4426a5591ede663145efcb39f10c6dacb5236", "2-2-31": "49be760a56c9f7481c378c143cfa7c341ce229c9974dc18a7fd8cc172618eb78", "2-2-32": "528d99986183b9ec4096f9420c1fc4b75c294eb1254ef25e8b28144e7ddfd6cc", "2-3-1": "8fd61084fa83e6319bad89ef478ca40798623d307a1574a473e6cf76362c488d", "2-3-2": "9fa1b8ca71541e167c08a588e2e4f7da5d2ac2a2baccf4ecd550f49daf07d768", "2-3-3": "ec8d3456e8ac27297c5190ab414aaaebd8f0dc61b40ccefbd14bf183d3599380", "2-3-4": "4fa075ae7b837d6d34a92f7f333da151fc0a690527c9b9368fc077fefe63f61a", "2-3-5": "88e477b77f1a3e424f1a7d4c08bd8d1fdafcc66f9e593a1c82e3bab6ef6b9431", "2-3-6": "7754220b85ae7c089cd12df81e6c330ce26dd815ac6643da3480c4e2f586f7aa", "2-3-7": "5f72fe75718c5862fb37bf009e7321b3546ec3e4a8d07074153aaf3455d7d228", "2-3-8": "7b4f07e0c338245dee84ccb5c8e5c77dcae9c1bd7e699553669763a757d39369", "2-3-9": "062947e6b735bdc637b449d186669fef9b7f27d8ac155848e1c4acafca494683", "2-3-10": "fa08f9843f8c07945bd8bf188fe28452b29e4f852564e437d83000e92097284a", "2-3-11": "b0be2b9cd03d407bbef454aa5f51475a6fb4686d9d98823b74d05b639831748e", "2-3-12": "80b563c7bb5cbd72429bab890d02eda330149b1aac3bba4e1c075cf0255d091f", "2-3-13": "30bd63bcb871aacc557270a20954459cb320bb0f38758bd67609343a003d28b0", "2-3-14": "5b90863ada7446eb3e9e3008c54c471c002ceb9d4059237b42ed3c80780a7a4e", "2-3-15": "dbc09a0a8d9679db4055123980824869d75edf2cec165f2b04330020ed6dec8d", "2-3-16": "f077564fb7a5470405130f09bdf655f9b695983aebb9293898477cc9144919c7", "2-3-17": "1c7b2f9ed9e8e0d560d68b1b6c250176e80f9bb5ee868e1d2fa831c573182b22", "2-3-18": "4fbb61c206bea5d7ef32499383b92b59a592fc2d44aadc128202a65e753fd8dd", "2-3-19": "93b268d501eb74a69fb8e5a3a6d48391abfeb298da284f4748628bb8855c9b49", "2-3-20": "cabcacd63ff235d400a1aa43f0b69e3f31c4dd886ca671f068502cac43f992bc", "2-3-21": "6445e341d5cf6c35a32d264c81fb878d0989d6a5a88813a1ec555a725f6df823", "2-3-22": "0ab46ea75490b3106d208ef673e69f8510cf80f12ccba8dbf1ad92b29735615d", "2-3-23": "e2b999dca06ec13f85acde95ba00b39852255dd07381b51e0b4218bcadc9c5fb", "2-3-24": "cdea9fc6bfb18063d95926a7bcb4e105beb9d83e2ef51081ae61824428d9cd37", "2-3-25": "0825c35c8b1f5b9d84fd5a1dfe7c09a541a638e36fdcb651c1542042f89a1ec6", "2-3-26": "da6e96073334773b293a2eebc6f268567758e5623706c78b136f9b4f0bf97dab", "2-3-27": "60efe671725d4a8174c02dfd89520463d282ec42b9e5fa050bf8679259d4f88e", "2-3-28": "554632dc1b1a6e04319a2edcdc948544324151031ad93a4b693c49055e4afb30", "2-3-29": "ff388a486173cf50f929e474814957ccbfeec87dfe6c7e0801e843f84a4d67c7", "2-3-30": "821f5267acef65c4177655b60cdc82c74c98e0bc7116764e08ba08a601473c71", "2-3-31": "71f5d261b0f590a5a4c0c0cdfbfd8f7d5ff2e7d60f23456632730661767ecc2e", "2-3-32": "5353dbe4ae180689b1902def827d3f4972a9105ad052942ac5099606e8684b0e", "2-4-1": "fab076ae3c52c725179619a81df0ecae2b76d01314b009fc02c726d9acbed319", "2-4-3": "b473aff86dd0f88f4907db18851c851838b632e3a85bc74e27a783816bb08982", "2-4-4": "2e0c78fb28a800acaa64000cfc2725bf2f3436893fd2ee83b5ef043a32becca8", "2-4-5": "1ccc78b66ed7d2093dcfcd3ab4475e21b763746954e0eec17bf69954c3d79d7c", "2-4-6": "2bea43e1dfca399d9db33965c734fef4990af22387e0806ba3cccd3d6412f27f", "2-4-7": "dd965f96caf4adc8af71fb1d66b09f7043b5f9ffdd4a32f65e398f0cad572b9a", "2-4-8": "a5205fe78bf1c9c9af1a5a0c2cb212802f8611d361d4048ba1da73f3866f2ffd", "2-4-9": "33b2bf9b5d393e731a1a7c7fefd64800bc68bac4f4267dde76d67a61de32bbf0", "2-4-10": "cd853d24f93cc5738119c3e0722a726a4312c7f27c338f427b781fdfc200399a", "2-4-11": "0940c2f5578a9ff4ef672ae719bb5007a469bb834f1b43b6f3fc7f0946d7aacd", "2-4-12": "52d363b1903659aa1f54890db1a58cdcd1f088937cda7f4ebc65bb59c1d1bbae", "2-4-13": "05d60f6113a8fc99fd2c7401d4b2c6b64b3b38dfbd49c6518546bb57a6ae6a64", "2-4-14": "9168ede701955f76431e4d91b1304b171e8d3a64af67a8bb6e489e2932d78431", "2-4-15": "41e6159d54cd5e75d3f5bce358a6f51aea4aab9ba8d93744f3c17cc3b818d8da", "2-4-16": "866b5a9370613a2c431cc6be71a3a43eb4740068408dbe71aa2ebda2c56edde6", "2-4-17": "bdea1f688cebd595a94253436d6209145936e22603dbfe672b45873d7ce8db3b", "2-4-18": "bc05e44498790b93816de09970fe91b892f79fba4a3f4ea4c592358a464db9ae", "2-4-19": "68d87a6ec6b2149d0c24e33728ce7a1334acd140d72b96c856deedb08279d32e", "2-4-20": "a7dbe2de401ed71ccd4331c01e9489d1b940c8c1eb105dbc353eb5f7263a669a", "2-4-21": "d9ea44e83129d351aeaf071edb2ab263cf924e6a2427a61ae05c56126e9ffa73", "2-4-22": "78643ddea5b65193d32cd2dbaf9202de3b1f69a9780431c30db1ab74e250161e", "2-4-23": "62ffa40c48d8ab25fa495575e6f56c8a7e4b5d68e0513173c17e3005863b99a6", "2-4-24": "f4d941cc0d1a540a43717b847f6f97d1e3e6789967e52ca6d60f851c26c1631d", "2-4-26": "3c6ede115104110edb7ac1e9b0e76ce1381fb43bb3e84be6022438a83a2f8200", "2-4-27": "73738e951379385c4e4cbbdc431e3b9ec485c4532ce15119ff82ce7169a9e55f", "2-4-28": "1d7f96624a839fe2f524080df6cd39e94b96bfc0d182099f5acd65b9122f2d2a", "2-4-29": "b592594d6517c9be5336fef8b6bd6b78b2770a71e0cfc9d8c16689a454356f33", "2-4-30": "929ca63c5740c9289154493ae8452c34cb594408482e0554f6dd968879b3eca9", "2-4-31": "62e40860070cf0db5ab25584df784d580fe0b748f892c3d1839c8e2f19dd1ea1", "2-4-32": "803ab9cf87a47f92f5b89922270e07beb10e1dddfb63fbc3d126384980cf8c64", "2-5-1": "2f6d74ae274451a7e01da647d626f505cc0e6de1440368eb993e27ad3f748f14", "2-5-2": "f6d929cfd36055c5b589346ac40193ae42429626aa5fad56a39cee3729cb1d6d", "2-5-3": "1624167d5d648b3a7fec759251faa357c266864fd84643ed9c62974bbe47f239", "2-5-4": "27856975df8f7276755833bc563fbaaee7bc7cbfc8fe3b2d46cd3c264f6266e9", "2-5-5": "9f18e94b0325097ef0bd1fb54518ed5cb03dd99a69822da06cda52926f5da16f", "2-5-6": "87bdaad47ff46646d7bb34e6f56bcbe2a11e9b3035a257601c1e8b11f22928e5", "2-5-7": "73b850cf0fa4f65eddd2c5ad7622fa579503a2e5b27ac5bf96ae6dff12f6a472", "2-5-8": "c51b101aa2b452de59f9f5ce59829290f3a7916420ef1f93219895029e17a1ae", "2-5-9": "252a72aeb383f6490be058ec05b5d9055414ee9fc8733cecf664fe708c085100", "2-5-10": "30702f7450e9cd08000ad7728cfb8164c81ec21b316bbf185488963162bdf7fb", "2-5-11": "b802035c61f485aa3fdda9184bf9d1c8c4487c7987f3b5a2e8de88b2611f4536", "2-5-12": "03cd3dcf55fd30031ac098d5fd55b63b9be0569c5ba2e0f04aa2d00da5a7e8ea", "2-5-13": "2b92123acdba4f835d70686eb963bcce5a5b1327ec0a58fee37215ad52a0d335", "2-5-14": "e39f3a4437105e1f540cc762a9fc5cd96f4180185a3272aaec2f91fcc821b6b9", "2-5-16": "e7e162a2f06c8c8aeabe37297746d83f938c996b78dcdacd04095b21e4a87386", "2-5-17": "bb93e8446b242b9155b48aa3dd721378ac431f7799e13d1e043dd463e87d9cf7", "2-5-18": "e8ddce8fc63ec071472a2d88683d3d8b39906d3c0876953be7d7fa8db7aa45f5", "2-5-19": "57d25aaf3aa726d4542ecfbda8a4bb8f2126d3e55d48c05834ccbca206117167", "2-5-20": "fe38573a8a64d648adae5f6cbfe33e7ebe44696dba082a58ae822afe20677ee6", "2-5-21": "17440e0bde090a8c42f0fd595e78f1972e836c0a5caa51c8fd8ca023161a7e6f", "2-5-22": "1428137d21d879c29751102eb9d6d59a4437d19ac879338062b145a8ccff7b17", "2-5-23": "3061f609908b1272c8c82ee5b00010987b17ea38ba956fe630871af8d749f5db", "2-5-24": "94d33f39ff989d662e316137992b2ea9f8b59c6f74aadb4bf62e170229db310a", "2-5-25": "bc7a053380c077c5a279cd3a4fa2f2cec3b61ef3bc51d8c359e37b590aa0ad00", "2-5-26": "67a3e38c6e81d5820c9c92c2dc7b5b81f2313a4df5d009b0564bc27b89eab43c", "2-5-27": "cf7eddbb96d5e6ff3dbd4f4a1b713559ff3e3f9d5cc2c2fde5c4f074cad204d6", "2-5-28": "940741813759e2f0af1260c4a3a9d2724ff123022ceba3e06eba7a2c614defa0", "2-5-29": "143ed8b172c8c4c273e13420eb6e92e54de1a19bafeb60113106e37cb6fdcbb1", "2-5-30": "527f4e7d2201d9774bff96f36a45b1adb0001cf4d2b7e37e1ad425ba15087691", "2-5-31": "33abc0de85331fe8077796b91ab78842a53a8f7aeef62fe76fc59fd13d9244fc", "2-5-32": "1798e21423ae1ab087290d4cf510ad478b496c59dc87f81278ee02bda3f83f4d", "2-6-1": "ee851a62435a28990c63afb946078b37bdbd23a5f2bf0a5de9da7d580b6c4371", "2-6-2": "68552c8945aa40389a38d8c449ef38ba7cec1530b35de3e981b89ed11946633c", "2-6-3": "d080370e0292f3436391286ee649fd42086778d95ac3618cbacf4b73adb73d3b", "2-6-4": "605eee9af7d4912bf988423e9ce07e137a99514945273df280be556a10998e91", "2-6-5": "8375b59fc02078a82350b1f535195ef2e3414b6e976a63d476f2f9d7d82e0da5", "2-6-6": "473056d9a86778604ab079ea5d8cd66ee17270732fd0653d6db392e8fa3d85b2", "2-6-7": "a62b0dec424bfcf0bf31708ffc3b7070e287cc1bc9473faefb455185411c360c", "2-6-8": "7ec69d4dc9120caa1778964b2b18c77b1d0e2e577508732f41ab6ef62c66d178", "2-6-9": "cb22b097ebe7f45988bac5c3a960f55a10f391a00de1fb066a4c779ac7af55ac", "2-6-10": "c8c9aa8557d541f8157699aaeccb12ae0f559375f630c5ce60f3bf6224e9f3a8", "2-6-11": "a84f4071211857aaca83acf8191ece899b64ae9ec67a87882dd1de98fe9dfb97", "2-6-12": "239fa8887782fce72eaeb29ed53e9a49e6a1606157895eeafcc610648ca6a3c3", "2-6-13": "f139bfd86b9beed172135d73be418018c2f703080687617b12df8fca2cf86630", "2-6-14": "4f87cb543f26d4cf84bb2c98bff318d90d37318f682f25544aa03473f028712c", "2-6-15": "5c16451bc658636fb4f889f79b7e4fd47f12247fb76b821039583a9a98f6808f", "2-6-16": "9482b0e1cb54797ac3443c60dcfaa8b97012f8f11026b8328b6f90f07496e4a4", "2-6-17": "705beb2e07cbed652c0ddbeb5058a8acbd51309ff770dadeb1aafd577bd8cebc", "2-6-18": "32eccb13a4e595785bde54172f6774e1c6f275ca5750546996f6d0c2ed8df1bc", "2-6-19": "0d4411e7fb16974dd226b33bb8e74d62509f15df60c5567854de12eb23454ca6", "2-6-20": "c7d5217707632e663a31617ea521aa2b953f711bcc118566f8cdfa0bc2f2cfb3", "2-6-21": "c72933c6aa0f35f97c172ce2a89e0e545b96bed487487bfef425216338aec355", "2-6-22": "4e870452b6b9c9a91fa712705f7cc49af0d418d3a3164ab905ba0bed28dddfbd", "2-6-23": "91f6c5df4fe5a2e7d4efa02fed161cf10de643ba819d0522ca836bb59237819c", "2-6-24": "d81010e612a26d6a617bbb063f89076261a4322d39c7b097fd5fe6d295ec4427", "2-6-25": "c1a1905be3bd1ba10681b1dde4a88a9a45c7a90a84af32983b297a7e6511acb2", "2-6-26": "41f46481e9c66ba59cc7645598bd9ca890852bb15c6b5735543a62d2043c1119", "2-6-27": "b6c160bfe842d9867b50200524d374de7963243f0fa837b974fe8e58ff355a15", "2-6-28": "3b3d9e2ab71473fa1cdf2bc2a39a953f5247118f154b617778497504ee6f921a", "2-6-29": "df3d08ee7d4855267903f02d682867deb6fcb56d2e1c76d14ded9263f8d0d9a1", "2-6-30": "c62c622fccc67baa2dbbea4dd97560665aa5fa11841bf4bce22fcbedf9dc1065", "2-7-1": "e48518e76be902f0469fd523d9c38a08f01cb892f07af5c5bee45a393f819065", "2-7-2": "6e804a7358dfcd2818c51ff87b1bd99ddc635ca0c42a6ed22dd7e35cfd13870e", "2-7-3": "2914a9effa46ef764da5d80cf947a6f4e2c136d3f5dbdfcbc226a9f05b3c61f4", "2-7-4": "95d62e87de3b73989abbff4642da03e65a0b26077e158c3af8cb9517b33f11ec", "2-7-5": "b92cbec06090400baceb5368d8374a34b05640693624f3471164d0a6f9ed1232", "2-7-6": "54c59f01830eebd4f29cf2f8f4bd49bbc0a9609c045d225abfd622bf8a6d2a6a", "2-7-7": "585330cdcc09a838b498ae55118ab0d9f398b2b37fbb9449dd2712d49358c8ff", "2-7-8": "5b8d4365a9a98ea57fa956735534b5dc9f9fe575fc4b2d2c419baa0345444534", "2-7-9": "06afc8f8e114f1fa398e000bf833c0a6571cbd102818a15cdf8e6e92c4f5800f", "2-7-10": "6c1faff7d07f20e87af10ee4f934310ff11694e9ba4506de62eff7c6047d520f", "2-7-11": "276dfb886ab89460541bfc9fb2d20634c61ab6b4cfcaa83e6401e4dc619699d8", "2-7-12": "536f141444258f94d1c0b6f9d11cd139da44bc627c78aa6cfe78fa14bd8c4555", "2-7-13": "dfb52b7adf78bf890036341f02e13738fbd661a9755410dc3e75d400b3635de9", "2-7-14": "44316d10188ae5f5c901dd1bef32aa450c24564d969f173d531aeff6d7351fa1", "2-7-15": "5a51c0fa095456e41e9610d007ec5d486e8942af873ea85518d6d9f0443b3188", "2-7-16": "f16fa8aa3c4650effbcb253032c72df7b081ebeffeb8063fa06464d2826b7ce8", "2-7-17": "c2ccabdb5ae95604fb638dfe07a75b5053bfcc519794d4599c8d673caf45cf1b", "2-7-18": "5f994c7640d3cca1e0bd9678d74637ddca4ec396216c3082fca3b842648b8275", "2-7-19": "8a85a49f752526322dfc64fddce5af2a037688e7bdc5802789e2873f55f92fc2", "2-7-20": "a12e4887f844baa1807a8bb372acf33dcd6dfa11a1e540bca9388d8cb8326f62", "2-7-21": "c93ae39bb616165dd15ba1e1bda6c9d7ad30ae33a644ad88e43e1f840e1e3a78", "2-7-22": "9e81d80848f3f1606d9a9b54acc807b62acf3fd3e93a264092c74bfa4e0206b3", "2-7-23": "3f77260ff0eb4102e47a6e6f4e3dbd7e436a2a7317ebbd80d979576c5f774264", "2-7-24": "4a752df6ff7452b9dfa4031df4c65fe62a93bcd2c65d02439a95405ebf28f866", "2-7-25": "e5b97476f5c47c3aa680cc85d1769e9a027601398bb791fa833ea6fbbb11ac20", "2-7-26": "2a8ce6305f77a04a2335992226735a6d70161076bda2ccc8cf699202b659114e", "2-7-27": "2f254441ea8a5a7bc144df7320a4e69ccd850b8996809bc0b1c5224b2b4c7b04", "2-7-28": "194836e2b1419cb555bc7ba69a4df32a97eb8e4dfac0729a9aaf2568f03bbcdd", "2-7-29": "fb091263ae1bcb2d0ed8c54328a0e4c3885e25f1abfecd15fc8e316ce8b9842f", "2-7-30": "c65e042065927c606bf2ba283cc61dbbc9f651d013a2dffa6cf8d3bf617aaa9e", "2-8-1": "384a27147157b5eac15f9659375d8e1a41307700dc10682a9a7e86ecffcf3dd2", "2-8-2": "967056db6c74412a445acdb526140e820b93176b18d13d2d0577b19484c62b58", "2-8-3": "ccb29ef086edfa452858128f3c94074cc01480b2deff467888a1ba36eb9f9472", "2-8-4": "804efdf8b889c38d713c7f53f0e77f2d2eb6f4d726cd584de3fcca28137a4117", "2-8-5": "5088940cfe4b816e6b83f4739456356ef03236684486ae554aedf7a5e39076cf", "2-8-6": "43d15ef7d7b00595276598f57514e564fed8a433f9ebfd525b4619b5b2499482", "2-8-7": "bfdf0d7ef7eb5c8aac27c9438538d47afa856f0506d613089729166f7c35f3c6", "2-8-8": "a563ec1c720e71b5dd2453f50274836605bea8a0236057368827e379d5a9fbd3", "2-8-9": "6e11ded0786477109e11fb06ef802e5368c3599b3495fddaa777d0b64eda97f3", "2-8-10": "3ba24a1502f6833a708981aeb369a4788f26096d4d6b8854aea8143e4e2f2e33", "2-8-11": "05d51bec6ddf6dd691edc64c444f78bde1131b42f9a09828370ac8afdaa9d73e", "2-8-12": "1858558dbdfc912e27171456da82e500f31af8b34840f08c62628f39b6d887a1", "2-8-13": "74541a92fefceb7c6b6cdd478a323a5ba83a633e6e672cacbde9da54f7a1219a", "2-8-14": "de0d8d2bda737b5ea1599bdaa67cc8201dce4c70c5702b03542a7eb66379c350", "2-8-15": "961cc0744f2da8ea53de446edff00329cb24ba4e303276dcb2a9795340ed86cb", "2-8-16": "681a020168e4e572488b63c10c2947fe4dd759f793a1ec362d8af66504a08188", "2-8-17": "6be28280bad250c3d51f9f67ceba5f0b93780138aaeb2ae449e35214c0677f44", "2-8-18": "ab7b0ff499f97b6e16ceda2dececc47aa453b7ea7856481c0d0ab60c7c4b9cea", "2-8-19": "8d6d2941957ce18184846f0aa310c0a7ed14b3bbfd8e74dffd9885c9341d57a4", "2-8-20": "d3bea6676ec87b41c56e95ab48bb66dc7a5c8a2592c2e5acf51275897b4fed6c", "2-8-21": "747e160fd26f3e892047539a68bb10fc3bc3bb1d0d4a867c8a9a188bd165bb5c", "2-8-22": "8df8daf02526c61730f11a8d94a9e475db0bc93cb3053215a56e1dbac3fbe46c", "2-8-23": "54f2de35c6d212443c8c2eb4b303b9336f1eb3d8db67b3be5559f5cc13a75330", "2-8-24": "fce01e2a198077ef7e4e8ed82a039772392dd2ec616648dd7cbc85cfa8bef191", "2-8-25": "c563e67ed89af178d7e2d9a5a125ad7110e344d7e6c44f8ce3b56d20543955ec", "2-8-26": "6473b964c1f0acf43772b57b664e6d624da7062ae647a7886a9270494c0e9c00", "2-8-27": "1b87b3db59c2ba7b57308554701f8085af7cf65ab5e47155052b98536b1c137e", "2-8-28": "dc5d353441279e687ea8f240d030df574108629490bc9fc85350b1734ea2ccdf", "2-8-29": "7417fa8e619c4f645aa2bfca1890f09fce0ba7c1f9baa6c1e93bf0e8414f852e", "2-8-30": "b8ef403c6cb2008249abf6e346f32d6d927a4c7a58c753ce89143d75a510435c", "2-8-31": "2a14a09e929a54a9cfe473ec643268b8302dc7c35f6be75a81aba5bb62378df5", "2-9-1": "f0c91aa80a98048fe94a83c0a25acee4eee21d1b9d4ba18e1bf75cb185c4495c", "2-9-2": "e8fe2213c5ada4cf811d5788ee7e3dcfe2626a3d106d6f89e429125154d4aa70", "2-9-3": "c294cf4025d49da443d34be0f48403ed087043373e5d030ac9465e550a494335", "2-9-4": "bddbe03d4b8681dbefabfc195dab6f0e8a32c0155f67f545554e0d193b57db1c", "2-9-5": "65ef705f8a197d015d41892381b3d3b24c075c6f58a9aaad30526669e00c6421", "2-9-6": "96922028414245f24124d394ec9033a5edd4ced6b4f27aa65ed7fde3fc09c0f6", "2-9-7": "7b90c80aca15f28132caa8d7048d62ee310a926627370962006c923174ec1d99", "2-9-8": "f30bb0f4a6ef13b9f6573b47b21430675088fc148fe825f2d69559a8515cf50f", "2-9-9": "76fbc9442f26f0f13cbc8d5d18b9bd5b7daddda56fe49bf323291bedb65641e7", "2-9-10": "5420a1ee90424dc15194a20034c8147fe37dc26a4f329da6afda431c552f9915", "2-9-11": "8834cfcc494607d98a0359df8e4060d4a4486de36bffa1383c301606f251af91", "2-9-12": "88ef600b2a2553c0cf93c38d73d3c657b5004533a270dc774e80c6ac8a15af62", "2-9-13": "20fa50d23726d9291c7f60ed4b1e16deda8e70c8cc23ad1c345c1e6c6ab7a40c", "2-9-14": "a2cb54d77bf5b8f9d4fe2a233691b2c772d30d763c848725146178198c37f0c1", "2-9-15": "50808fc46b2c8b78f94f0a23d6bc27fa6f62c4be5ce7fb390706080753bc82f7", "2-9-16": "c5e0fd15c2cec318d787a6ebd7f8d206790ef5bcbace0779b6fc5a071567b4fe", "2-9-17": "ea88cb4b6f21e907c169456bfa395281aca5dcdad69e53735016a74b22bc4c5a", "2-9-18": "04ce9c0463854a147222af3ad321c136a5d70117da3e051386eb9ab62d32976b", "2-9-19": "07f9cdc2a1b678c8c7dd4eef635b36cc6c1b9f7fac57a77865ee69b0573553bb", "2-9-20": "e9d4a911a52905b9f4c1a751e7d891f9396525130ad83a837d9854eeb8685d48", "2-9-21": "ea57cdc5ce8dd5cf71907687a2bb5237a2f950f1139a52b361deccd68b3a33d8", "2-9-22": "c6bbd48d549805620bc077a345d89601bb063e0afa2c3c55f96f2d3aaf40976a", "2-9-23": "c57284962079cd3b0d226712043cdf4ba450d27fcd727de2456ed2d07bb25e47", "2-9-24": "25c8bcbe5a98489f786cee1844a5ec2bb1420bfaaa6063e85e044a4a911317a6", "2-9-25": "a5f21a20922101ce93f1520eb7ca6341c2583ef0e673aba41a54fc152148fdcd", "2-9-26": "b6a183c3d51d60bac37261a4872a1ded573a5f03dd8610f542803142bef7f685", "2-9-27": "da182e2982ec4bdbdd7eccc2bed1b8bd995bcca56c6f196c445adc900df02594", "2-9-28": "6a454d2414e8b20486e93a633dd540afcaf748ce99dd79549b1ab1dcbd817707", "2-9-29": "e2f8e4fe44e3a0f1482eea7a2bc4e27d985539f20e3d7cb37e9e5136d78eb40c", "2-9-30": "20fbb91a2c3579d0129b02cdf71cbc84e15cd0fcb98e40d4285aa1a60bb14a7d", "2-9-31": "10fb08c572c049d71f4ec78f18b5df3c4af16f3edef6d280b739b991a4dd481a", "2-10-1": "fad6fd981e420f7991219178e87288049156a3af7d4a708bb98a069b3c5c80d0", "2-10-2": "beceb9895f317b8ebcf655cf84c19af4eca1c2b87de390839ee8bcc76f3ce6b6", "2-10-3": "a32f45e47de0ab1ae340eff08910aa5755fbee455c5a06b7879200a02102877f", "2-10-4": "48874851304372d300074235dbca803833bb6bbd2491aaee09932df4b59688b8", "2-10-5": "7448e5708e8ae1956bf7c1ffffd745262625c80565b1fec4c068be2aa6bde20f", "2-10-6": "96377a7405e44c9e0b3fc6805e19ac23e5d90c519e6773249d41b2e114aefcbf", "2-10-7": "2597f53f46c28af7bb5e35be1f753670de926540474edf832f3c8db5ac00da20", "2-10-8": "82184dfd4445021a5e2e3488b4fa7de7241f9b6ea4c4e877756fc7dad672b3d5", "2-10-9": "017cafa8330d1bae75edefac5b30f936a6ab1a1c9e2e3459215882b910a2616b", "2-10-10": "834613b02f51cd28564a65797cc25926a06beb66efd59af16b0de7ed45b71b9a", "2-10-11": "9f7b5c1af346e4aa7c580162d7e661a7229a2663f82ddc260ed0234d21c83f94", "2-10-12": "6ac161f334f6da23b06748b370aef7c08634f4e69e3a36987cd5a5b1b29e5eaf", "2-10-13": "98231e57936282aba7496a8bb16adb408000fc36c84d9bf073eb08fc4950217a", "2-10-14": "953e789df7d545b0e8ea417415b938ddaaac699fc4755a6719ff160613997604", "2-10-15": "52dc1a600cc6348c1e788f56c2b97f38a9a9764cf7c3841536523ca6004ec8a7", "2-10-16": "7c72ee6bf47efee8d98f96da58b14206cfa0d08454337f47142028bf01d24d0c", "2-10-17": "5e1bf418c845ff1ace87299d450748a8997c4197cd10a6d70393673b5dc6f2bf", "2-10-18": "e9ff5d776bb37865bdb0ec87f4e7e60e0c1d0931072d0545793c311c25585a32", "2-10-20": "d26cf59396bda33edf1a2c994644f885ca6df5e00dbe2790cdc00e8caa51e2a9", "2-10-21": "12c649f083dc2039b6177e597c4bd24b221f9675b63ce8241041404cb595d284", "2-10-22": "144d4a4f8b041fc0f34b0ea23ced6720b7c11399a527f455601fb5233300825c", "2-10-23": "6ba3183e8e4b268360476edb754d436496ef66971221e1cb2832bd144f314784", "2-10-24": "7cc0067e32dbdc94c51d5ed50bd0a7561552a90cdac8ce353d4f0fdef21f022c", "2-10-25": "181bbfe48fcedb8f4562095d8604c8d91ec4645b5f09cba295ffdb31ea6b9488", "2-10-26": "802f6cdd35f012b0435eab40b801ea2409e27e063b566e960820f0d2b6461e80", "2-10-27": "8b98aa6c7999b0c21a942904d4fae8ab33b377551bb106216110dc26c0006458", "2-10-28": "f1ce89bfa4415707ecdf44b71f54e6aa74a75173cb7c1fe3a4e7b74c918293e4", "2-10-29": "3cb0878df8be6eb2298314375d9094225b6bcaf11ab0ce2e1617d1d7a932d3fb", "2-10-30": "970e623569605b700688b8e1c206d79320e91d89eb05d19910594425cbbbd440", "2-10-31": "a8f3e884cded1282735c60cee3bbf7de722e743d588612ea5666cb961fbe2a96", "2-10-32": "a77a231c5cb44b6022b41c1409e86080df1942f527c3dbcfdbe3bf83ecd9a445"};
+
+const HASH_SALT='sanghyeon2026-asedu-2grade';
+
+// ── 프로그램 데이터 ──
+const A_PROGS=[
+ {id:1,name:'디지털 시민 역량 함양을 위한 제안',teacher:'권민정, 최정윤',type:'통합',max:32,desc:'문학으로 미래를 읽고 사회문화로 답하다: 디지털 시민 역량 탐구'},
+ {id:2,name:'환경 인포데믹 대응 프로젝트',teacher:'김정아, 이영한',type:'통합',max:32,desc:'기후 변화 체험 및 온라인 환경 정보 신뢰성 검증, 책임 있는 디지털 콘텐츠 제작'},
+ {id:3,name:'논리와 파라독스',teacher:'김도윤, 윤인선',type:'통합',max:32,desc:'수학 및 여러 분야에서 발생되는 논리적 역설과 관련된 상황을 분석하기'},
+ {id:4,name:'우리 동네 생태환경 디자인 프로젝트',teacher:'김상국, 이현주',type:'통합',max:32,desc:'플로깅으로 수집한 환경 데이터를 바탕으로 생태지도와 에코 디자인 제작'},
+ {id:5,name:'논쟁의 막이 오르다, 역할극으로 풀어내는 사회적 딜레마',teacher:'김지연, 류윤미',type:'통합',max:32,desc:'사회적 쟁점을 역할극으로 풀어내며 무대에서 답을 찾아가는 탐구 활동'},
+ {id:6,name:'인공지능의 원리와 수학적 분석',teacher:'오세정, 김민아',type:'통합',max:32,desc:'텍스트 데이터를 벡터로 표현, 유사도 계산 및 AI 활용 최단 거리 알고리즘 구현'},
+ {id:7,name:'패턴으로 읽는 디지털 세상',teacher:'김해랑',type:'A전용',max:32,desc:'디지털 세상의 변화와 반복 패턴을 해석하며 수학의 실제 활용을 탐구'},
+ {id:8,name:'인공지능 윤리 재판 프로젝트',teacher:'서영실',type:'A전용',max:32,desc:'영화 <A.I.> 속 AI 캐릭터 탐구 후 AI 윤리재판극 대본 작성 및 발표'},
+ {id:9,name:'공정여행과 지역관광상품 만들기',teacher:'손학수',type:'A전용',max:32,desc:'공정여행을 실현할 국내관광콘텐츠 발굴, 스탬프투어 제작 및 굿즈뱃지 만들기'},
+ {id:10,name:'음악미술융합 디지털드로잉',teacher:'김고은',type:'A전용',max:32,desc:'음악을 들으며 디지털드로잉 앱을 이용하여 일러스트 그리기 (드로잉 펜 필요)'}
+];
+const B_PROGS=[
+ {id:1,name:'디지털 시민 역량 함양을 위한 제안',teacher:'권민정, 최정윤',type:'통합',max:32,desc:'문학으로 미래를 읽고 사회문화로 답하다: 디지털 시민 역량 탐구'},
+ {id:2,name:'환경 인포데믹 대응 프로젝트',teacher:'김정아, 이영한',type:'통합',max:32,desc:'기후 변화 체험 및 온라인 환경 정보 신뢰성 검증, 책임 있는 디지털 콘텐츠 제작'},
+ {id:3,name:'논리와 파라독스',teacher:'김도윤, 윤인선',type:'통합',max:32,desc:'수학 및 여러 분야에서 발생되는 논리적 역설과 관련된 상황을 분석하기'},
+ {id:4,name:'우리 동네 생태환경 디자인 프로젝트',teacher:'김상국, 이현주',type:'통합',max:32,desc:'플로깅으로 수집한 환경 데이터를 바탕으로 생태지도와 에코 디자인 제작'},
+ {id:5,name:'논쟁의 막이 오르다, 역할극으로 풀어내는 사회적 딜레마',teacher:'김지연, 류윤미',type:'통합',max:32,desc:'사회적 쟁점을 역할극으로 풀어내며 무대에서 답을 찾아가는 탐구 활동'},
+ {id:6,name:'인공지능의 원리와 수학적 분석',teacher:'오세정, 김민아',type:'통합',max:32,desc:'텍스트 데이터를 벡터로 표현, 유사도 계산 및 AI 활용 최단 거리 알고리즘 구현'},
+ {id:11,name:'스토리텔링 기반 보드게임 제작 프로젝트',teacher:'정영란',type:'B전용',max:32,desc:'사회문제, 미래 사회, 환경, AI 등 다양한 주제를 바탕으로 보드게임 기획 및 제작'},
+ {id:12,name:'지속가능 미래 프로젝트',teacher:'박지혜',type:'B전용',max:32,desc:'기후·환경·사회 문제 탐구 후 지속가능한 미래를 위한 실천 방안 콘텐츠 제작'},
+ {id:13,name:'사회 낯설게 보기, 불평등 해결 프로젝트',teacher:'이은숙',type:'B전용',max:32,desc:'익숙한 현상에 숨겨진 불평등을 찾아 해결 방법을 제안하고 평등 사회 캠페인 진행'},
+ {id:14,name:'나를 살리는 데이터 시각화',teacher:'',type:'B전용',max:32,desc:'국내외 사회 문제(에너지 등)와 관련한 데이터를 코딩 등을 활용하여 시각화'}
+];
+const C_PROGS=[
+ {id:1,name:'경상계열 (경영/경제)',max:25},{id:2,name:'언론/미디어 계열, 복수전공',max:20},
+ {id:3,name:'정치/국제/법/군인/경찰 계열',max:20},{id:4,name:'사회/심리 계열',max:20},
+ {id:5,name:'어문/인문/관광서비스',max:20},{id:6,name:'체육',max:20},
+ {id:7,name:'예술 (미술/디자인/연극영화)',max:20},{id:8,name:'교육',max:20},
+ {id:9,name:'의약학 및 간호/보건 계열',max:20},{id:10,name:'전기전자/반도체/컴퓨터/인공지능',max:25},
+ {id:11,name:'화학/신소재/재료공학 계열',max:25},{id:12,name:'기계/건축/환경/지구과학',max:25},
+ {id:13,name:'생명과학/생명공학/식품',max:25},{id:14,name:'음악',max:20}
+];
+const INTEGRATED_IDS=[1,2,3,4,5,6];
+const TOTAL_STUDENTS=308;
+
+const OPEN  = new Date('2026-06-18T16:00:00+09:00');
+const CLOSE = new Date('2026-06-22T19:00:00+09:00');
+const GATE_CODE='17869';
+
+// ★ 2학년용 새 배포 URL로 교체하세요
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyJGwqb1kzDueq9CNcWoVoSkanPfApyy9wVGmHOeO5Gm4Qze2zKsc1XZZdQL1EYvZs_/exec';
+
+// ── 상태 ──
+let student=null;
+let selA=null, selB=null, selC=null;
+let cntA={}, cntB={}, cntC={};
+let serverTotal=0, serverNot=0;
+let savedA=null, savedB=null, savedC=null; // 서버에 저장된 현재값
+
+function isOpen(){return new Date()>=OPEN&&new Date()<=CLOSE}
+function isClosed(){return new Date()>CLOSE}
+
+// ── SHA-256 ──
+async function sha256(s){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── 게이트 ──
+function checkGate(){
+  const v=document.getElementById('gate-input').value.trim();
+  if(v===GATE_CODE){ sessionStorage.setItem('g2_gate','1'); routeScreen(); }
+  else document.getElementById('gate-msg').innerHTML='<div class="al al-err">접속 코드가 올바르지 않습니다.</div>';
+}
+
+function routeScreen(){
+  ['gate','countdown','closed','login','apply'].forEach(id=>document.getElementById(id).style.display='none');
+  if(sessionStorage.getItem('g2_gate')!=='1'){ document.getElementById('gate').style.display='block'; return; }
+  if(isClosed()){ renderClosed(); document.getElementById('closed').style.display='block'; return; }
+  if(new Date()<OPEN){ renderCountdown(); document.getElementById('countdown').style.display='block'; return; }
+  if(!student){ document.getElementById('login').style.display='block'; return; }
+  document.getElementById('apply').style.display='block';
+  fetchCounts();
+}
+
+function renderClosed(){
+  document.getElementById('closed').innerHTML='<div class="closed-box"><div style="font-size:40px">🔒</div><div class="cd-sub" style="margin-top:10px">신청이 마감되었습니다</div><div class="cd-title">문의: 담당 선생님</div></div>';
+  document.getElementById('top-badge').textContent='신청 마감';
+}
+function renderCountdown(){
+  function upd(){
+    const d=OPEN-new Date();
+    if(d<=0){ routeScreen(); return; }
+    const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss=Math.floor(d%6e4/1e3);
+    document.getElementById('countdown').innerHTML=
+      '<div class="cd-box"><div class="cd-title">신청 시작까지</div><div class="cd-sub">2026.6.18(목) 16:00 시작</div>'+
+      '<div class="cd-grid">'+
+      '<div class="cd-unit"><div class="cd-num">'+dd+'</div><div class="cd-lbl">일</div></div>'+
+      '<div class="cd-unit"><div class="cd-num">'+hh+'</div><div class="cd-lbl">시간</div></div>'+
+      '<div class="cd-unit"><div class="cd-num">'+mm+'</div><div class="cd-lbl">분</div></div>'+
+      '<div class="cd-unit"><div class="cd-num">'+ss+'</div><div class="cd-lbl">초</div></div>'+
+      '</div></div>';
+  }
+  upd(); setInterval(upd,1000);
+}
+
+// ── 로그인 ──
+async function doLogin(){
+  const cls=document.getElementById('in-cls').value.trim();
+  const num=document.getElementById('in-num').value.trim();
+  const nm=document.getElementById('in-name').value.trim();
+  const dob=document.getElementById('in-dob').value.trim();
+  const msg=document.getElementById('login-msg');
+  if(!cls||!num||!nm||!dob){ msg.innerHTML='<div class="al al-err">모든 항목을 입력해 주세요.</div>'; return; }
+  const key='2-'+Number(cls)+'-'+Number(num);
+  const expected=STUDENT_HASH[key];
+  if(!expected){ msg.innerHTML='<div class="al al-err">명단에서 학번을 찾을 수 없습니다. 반·번호를 확인해 주세요.</div>'; return; }
+  const btn=document.getElementById('login-btn'); btn.disabled=true; btn.textContent='확인 중...';
+  const cand=key+'|'+nm.replace(/\s/g,'')+'|'+dob+'|'+HASH_SALT;
+  const actual=await sha256(cand);
+  if(actual!==expected){ msg.innerHTML='<div class="al al-err">이름 또는 생년월일이 일치하지 않습니다.</div>'; btn.disabled=false; btn.textContent='입장하기'; return; }
+  student={grade:2,cls:Number(cls),num:Number(num),name:nm};
+  await loadMyReg();
+  routeScreen();
+}
+
+// ── 내 신청 불러오기 ──
+async function loadMyReg(){
+  try{
+    const u=SCRIPT_URL+'?action=getMyReg&grade=2&cls='+student.cls+'&num='+student.num;
+    const r=await fetch(u,{method:'GET'});
+    const d=await r.json();
+    if(d.success){
+      savedA=d.a||null; savedB=d.b||null; savedC=d.c||null;
+      selA=savedA; selB=savedB; selC=savedC;
+    }
+  }catch(e){}
+}
+
+// ── 현황 가져오기 ──
+async function fetchCounts(){
+  try{
+    const r=await fetch(SCRIPT_URL+'?action=getCounts',{method:'GET'});
+    const d=await r.json();
+    if(d.success){
+      cntA=d.A||{}; cntB=d.B||{}; cntC=d.C||{};
+      serverTotal=(typeof d.total==='number')?d.total:0;
+      serverNot=(typeof d.notRegistered==='number')?d.notRegistered:Math.max(0,TOTAL_STUDENTS-serverTotal);
+    }
+  }catch(e){}
+  renderAll();
+}
+
+// ── 렌더 ──
+function renderAll(){ renderSum(); renderMyCurrent(); renderA(); renderB(); renderC(); updateSaveBar(); }
+
+function renderSum(){
+  let full=0;
+  A_PROGS.forEach(p=>{ if((cntA[p.id]||0)>=p.max) full++; });
+  B_PROGS.forEach(p=>{ if(INTEGRATED_IDS.indexOf(p.id)===-1 && (cntB[p.id]||0)>=p.max) full++; });
+  C_PROGS.forEach(p=>{ if((cntC[p.id]||0)>=p.max) full++; });
+  document.getElementById('s-tot').textContent=serverTotal;
+  document.getElementById('s-not').textContent=serverNot;
+  document.getElementById('s-full').textContent=full;
+}
+
+function renderMyCurrent(){
+  const box=document.getElementById('my-current');
+  if(savedA||savedB||savedC){
+    const an=nm(A_PROGS,savedA), bn=nm(B_PROGS,savedB), cn=nm(C_PROGS,savedC);
+    box.style.display='block';
+    box.className='mysel';
+    box.innerHTML='<div class="mysel-t">✅ 현재 내 신청 내역 (변경하려면 아래에서 다시 선택 후 저장)</div>'+
+      '<div class="sel-row"><span class="sel-label">A타임</span><span class="sel-val">'+(an||'-')+'</span></div>'+
+      '<div class="sel-row"><span class="sel-label">B타임</span><span class="sel-val">'+(bn||'-')+'</span></div>'+
+      '<div class="sel-row"><span class="sel-label">진로캠프</span><span class="sel-val">'+(cn||'-')+'</span></div>';
+  }else{ box.style.display='none'; }
+}
+function nm(list,id){ if(!id) return ''; const p=list.find(x=>x.id===Number(id)); return p?p.name:''; }
+
+function card(p,slot,cnt,selected,locked){
+  const c=cnt||0, pct=Math.min(100,Math.round(c/p.max*100));
+  const full=c>=p.max && !selected && !locked;
+  const bc=full?'#E74C3C':pct>=80?'#E67E22':'#1D9E75';
+  const sc=full?'seats-full':pct>=80?'seats-warn':'seats-ok';
+  const tagType = slot==='c'?'C':(p.type==='통합'?'통합':(slot==='a'?'A':'B'));
+  const tagTxt = slot==='c'?'진로캠프':(p.type==='통합'?'A/B통합':(slot==='a'?'A전용':'B전용'));
+  let cls='pc'; if(selected) cls+=' selected'; if(locked) cls+=' locked'; if(full) cls+=' disabled';
+  const onclick = (locked||full)?'':' onclick="pick(\''+slot+'\','+p.id+')"';
+  return '<div class="'+cls+'"'+onclick+'>'+
+    '<div class="pc-header"><div class="pc-num'+(full?' disabled':'')+'">'+p.id+'</div><div class="pc-name">'+p.name+'</div></div>'+
+    '<div class="pc-meta"><span class="tag tag-'+tagType+'">'+tagTxt+'</span>'+(p.teacher?'👤 '+p.teacher+' · ':'')+'최대 '+p.max+'명</div>'+
+    (p.desc?'<div class="pc-meta" style="font-size:11px;margin-top:-4px">'+p.desc+'</div>':'')+
+    '<div class="pc-bar-wrap"><span class="pc-seats '+sc+'">'+(full?'마감':c+'/'+p.max)+'</span><div class="bar-bg"><div class="bar-fill" style="width:'+pct+'%;background:'+bc+'"></div></div></div>'+
+    (locked?'<div class="lock-badge">🔒 A타임 통합 선택으로 자동 배정</div>':'')+
+    '</div>';
+}
+
+function renderA(){
+  document.getElementById('grid-a').innerHTML=A_PROGS.map(p=>card(p,'a',cntA[p.id],selA===p.id,false)).join('');
+}
+function renderB(){
+  const isInt = INTEGRATED_IDS.indexOf(selA)!==-1;
+  const notice=document.getElementById('b-notice');
+  const bdesc=document.getElementById('b-desc');
+  if(isInt){
+    const p=B_PROGS.find(x=>x.id===selA);
+    bdesc.textContent='자동 배정됨';
+    notice.innerHTML='<div class="al al-warn" style="font-size:12px">⚠️ A타임 통합 프로그램을 선택하여 B타임에도 <strong>"'+p.name+'"</strong>이(가) 자동 배정됩니다.</div>';
+    // 통합 6개만, 선택된 것은 locked
+    document.getElementById('grid-b').innerHTML=B_PROGS.filter(x=>INTEGRATED_IDS.indexOf(x.id)!==-1)
+      .map(p2=>card(p2,'b',cntB[p2.id],false,p2.id===selA)).join('');
+  }else{
+    bdesc.textContent='1개 선택';
+    notice.innerHTML = selA?'<div class="al al-info" style="font-size:12px">A전용('+selA+'번)을 선택하셨습니다. B타임 프로그램을 자유롭게 선택하세요.</div>':'';
+    document.getElementById('grid-b').innerHTML=B_PROGS.map(p=>card(p,'b',cntB[p.id],selB===p.id,false)).join('');
+  }
+}
+function renderC(){
+  document.getElementById('grid-c').innerHTML=C_PROGS.map(p=>card(p,'c',cntC[p.id],selC===p.id,false)).join('');
+}
+
+function pick(slot,id){
+  if(slot==='a'){
+    selA=id;
+    if(INTEGRATED_IDS.indexOf(id)!==-1){ selB=id; }   // 통합 → B 자동
+    else if(INTEGRATED_IDS.indexOf(selB)!==-1){ selB=null; } // 통합이었다가 A전용으로 바꾸면 B 해제
+    renderA(); renderB();
+  }else if(slot==='b'){
+    selB=id; renderB();
+  }else{
+    selC=id; renderC();
+  }
+  updateSaveBar();
+}
+
+function updateSaveBar(){
+  const info=document.getElementById('save-info');
+  const btn=document.getElementById('save-btn');
+  const need=[];
+  if(!selA) need.push('A타임');
+  if(!selB) need.push('B타임');
+  if(!selC) need.push('진로캠프');
+  if(need.length){ info.textContent=need.join('·')+'를 선택해 주세요.'; btn.disabled=true; }
+  else{
+    const changed=(selA!==savedA||selB!==savedB||selC!==savedC);
+    if(savedA && !changed){ info.textContent='현재 신청 내역과 동일합니다.'; btn.disabled=true; btn.textContent='저장됨'; }
+    else{ info.textContent='선택을 확인하고 저장하세요.'; btn.disabled=false; btn.textContent=savedA?'변경 저장':'저장'; }
+  }
+}
+
+async function doSave(){
+  const btn=document.getElementById('save-btn'); const msg=document.getElementById('apply-msg');
+  if(!selA||!selB||!selC) return;
+  btn.disabled=true; btn.textContent='저장 중...';
+  try{
+    const params=new URLSearchParams({action:'register',grade:'2',cls:student.cls,num:student.num,name:student.name,a:selA,b:selB,c:selC});
+    const r=await fetch(SCRIPT_URL+'?'+params.toString(),{method:'GET'});
+    const d=await r.json();
+    if(d.success){
+      savedA=d.a; savedB=d.b; savedC=d.c;
+      selA=savedA; selB=savedB; selC=savedC;
+      msg.innerHTML='<div class="al al-ok">✅ 신청이 저장되었습니다.</div>';
+      await fetchCounts();
+      setTimeout(()=>{ msg.innerHTML=''; },4000);
+    }else if(d.error&&d.error.indexOf('full')===0){
+      msg.innerHTML='<div class="al al-err">「'+(d.name||'')+'」('+(d.full||'')+'타임)이(가) 방금 마감되었습니다. 다른 프로그램을 선택해 주세요.</div>';
+      await fetchCounts();
+    }else{
+      msg.innerHTML='<div class="al al-err">저장 중 오류가 발생했습니다. 다시 시도해 주세요.</div>';
+    }
+  }catch(e){
+    msg.innerHTML='<div class="al al-err">네트워크 오류입니다. 잠시 후 다시 시도해 주세요.</div>';
+  }
+  updateSaveBar();
+}
+
+// 주기적 현황 갱신
+setInterval(()=>{ if(document.getElementById('apply').style.display!=='none') fetchCounts(); },15000);
+
+// 시작
+routeScreen();
+</script>
+</body>
+</html>
