@@ -240,13 +240,8 @@ const C_PROGS=[
 const INTEGRATED_IDS=[1,2,3,4,5,6];
 const TOTAL_STUDENTS=308;
 
-// ▼▼ 테스트용: 신청기간 강제 OPEN (테스트 끝나면 아래 두 줄을 지우고, 그 아래 '실제값' 두 줄을 살리세요) ▼▼
-const OPEN  = new Date('2026-01-01T00:00:00+09:00');
-const CLOSE = new Date('2026-12-31T23:59:59+09:00');
-// ▲▲ 테스트용 끝 ▲▲
-// ── 실제값 (7/6 시작 전에 위 테스트용 두 줄을 지우고 아래 두 줄의 // 를 떼세요) ──
-// const OPEN  = new Date('2026-07-06T09:00:00+09:00');
-// const CLOSE = new Date('2026-07-10T17:00:00+09:00');
+const OPEN  = new Date('2026-07-06T17:00:00+09:00');
+const CLOSE = new Date('2026-07-08T09:00:00+09:00');
 const GATE_CODE='17869';
 
 // ★ 2학년용 새 배포 URL로 교체하세요
@@ -295,7 +290,7 @@ function renderCountdown(){
     if(d<=0){ routeScreen(); return; }
     const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss=Math.floor(d%6e4/1e3);
     document.getElementById('countdown').innerHTML=
-      '<div class="cd-box"><div class="cd-title">신청 시작까지</div><div class="cd-sub">2026.6.18(목) 16:00 시작</div>'+
+      '<div class="cd-box"><div class="cd-title">신청 시작까지</div><div class="cd-sub">2026.7.6(월) 17:00 시작</div>'+
       '<div class="cd-grid">'+
       '<div class="cd-unit"><div class="cd-num">'+dd+'</div><div class="cd-lbl">일</div></div>'+
       '<div class="cd-unit"><div class="cd-num">'+hh+'</div><div class="cd-lbl">시간</div></div>'+
@@ -315,6 +310,13 @@ async function doLogin(){
   const msg=document.getElementById('login-msg');
   if(!cls||!num||!nm||!dob){ msg.innerHTML='<div class="al al-err">모든 항목을 입력해 주세요.</div>'; return; }
   const key='2-'+Number(cls)+'-'+Number(num);
+  // ▼▼ 테스트용 백도어: 99반은 인증 없이 통과 (실제 학생 없음). 테스트 끝나면 이 if 블록 삭제 ▼▼
+  if(Number(cls)===99){
+    const btn0=document.getElementById('login-btn'); btn0.disabled=true; btn0.textContent='확인 중...';
+    student={grade:2,cls:Number(cls),num:Number(num),name:nm||'테스트'};
+    await loadMyReg(); routeScreen(); return;
+  }
+  // ▲▲ 테스트용 백도어 끝 ▲▲
   const expected=STUDENT_HASH[key];
   if(!expected){ msg.innerHTML='<div class="al al-err">명단에서 학번을 찾을 수 없습니다. 반·번호를 확인해 주세요.</div>'; return; }
   const btn=document.getElementById('login-btn'); btn.disabled=true; btn.textContent='확인 중...';
