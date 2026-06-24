@@ -240,12 +240,17 @@ const C_PROGS=[
 const INTEGRATED_IDS=[1,2,3,4,5,6];
 const TOTAL_STUDENTS=308;
 
-const OPEN  = new Date('2026-06-18T16:00:00+09:00');
-const CLOSE = new Date('2026-06-25T21:00:00+09:00');
+// ▼▼ 테스트용: 신청기간 강제 OPEN (테스트 끝나면 아래 두 줄을 지우고, 그 아래 '실제값' 두 줄을 살리세요) ▼▼
+const OPEN  = new Date('2026-01-01T00:00:00+09:00');
+const CLOSE = new Date('2026-12-31T23:59:59+09:00');
+// ▲▲ 테스트용 끝 ▲▲
+// ── 실제값 (7/6 시작 전에 위 테스트용 두 줄을 지우고 아래 두 줄의 // 를 떼세요) ──
+// const OPEN  = new Date('2026-07-06T09:00:00+09:00');
+// const CLOSE = new Date('2026-07-10T17:00:00+09:00');
 const GATE_CODE='17869';
 
 // ★ 2학년용 새 배포 URL로 교체하세요
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyDgkamg0KT2agCMk14bDBwjSW0XzTcuGCG2USckGzrAsn_Tj6fSMb-92URJK1hBFsx/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwqJKDiGfM8I-eDWBSM79eq7uz-9JC5zkkkftUhiPY5BAKzWm67QaoDiJnGqYRSY6II/exec';
 
 // ── 상태 ──
 let student=null;
