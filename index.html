@@ -469,18 +469,17 @@ async function doSave(){
   if(!selA||!selB||!selC) return;
   btn.disabled=true; btn.textContent='저장 중...';
   const wantA=selA, wantB=selB, wantC=selC;
-  const params='action=save&grade=2'
-    +'&cls='+encodeURIComponent(student.cls)
-    +'&num='+encodeURIComponent(student.num)
-    +'&sname='+encodeURIComponent(student.name)
-    +'&a='+encodeURIComponent(selA)
-    +'&b='+encodeURIComponent(selB)
-    +'&c='+encodeURIComponent(selC);
+  const payload={action:'save',grade:2,cls:student.cls,num:student.num,sname:student.name,a:selA,b:selB,c:selC};
 
   let d=null;
-  // 저장 요청 (3학년 검증 방식: 일반 fetch GET)
+  // 저장은 POST로 전송 (익명 GET 쓰기 차단 회피). text/plain → CORS 프리플라이트 없음.
   try{
-    const r=await fetch(SCRIPT_URL+'?'+params,{method:'GET',mode:'cors'});
+    const r=await fetch(SCRIPT_URL,{
+      method:'POST',
+      mode:'cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
     d=await r.json();
   }catch(e){ d=null; }
 
